@@ -1,13 +1,8 @@
-import Head from "next/head";
-import { useState, useEffect } from "react";
-
-
-
+import Head from 'next/head';
+import { useState, useEffect } from 'react';
 
 export default function Home() {
-  // Estado para armazenar os valores do formulário
   const [formData, setFormData] = useState({
-    carimbo_de_data_hora: '',
     nome_completo: '',
     data_de_nascimento: '',
     genero: '',
@@ -15,28 +10,11 @@ export default function Home() {
     telefone: '',
     instagram: '',
     email: '',
-    regiao: '',
+    regiao_onde_mora: '',
     orgao: '',
-    comunidade_onde_mora: '',
+    comunidade: '',
     origem: ''
   });
-
-
-  const generateTimestamp = () => {
-    const now = new Date();
-    const formattedDate = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
-    const formattedTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
-    return `${formattedDate} ${formattedTime}`;
-  };
-
-  // useEffect para definir o carimbo de data/hora quando o componente é montado
-  useEffect(() => {
-    setFormData(prevData => ({
-      ...prevData,
-      carimbo: generateTimestamp()
-    }));
-  }, []);
-
 
   // Função para lidar com a mudança dos inputs
   const handleChange = (e) => {
@@ -62,11 +40,11 @@ export default function Home() {
 
       if (response.ok) {
         const result = await response.json();
-        console.log(result); // Manipule o resultado conforme necessário
         alert('Dados enviados com sucesso!');
       } else {
-        console.error('Erro na resposta da API:', response.statusText);
-        alert('Erro ao enviar os dados!');
+        const errorData = await response.json();
+        console.error('Erro:', errorData);
+        alert('Erro ao enviar os dados: ' + errorData.error);
       }
     } catch (error) {
       console.error('Erro ao enviar os dados:', error);
@@ -78,37 +56,46 @@ export default function Home() {
     <>
       <Head>
         <title>Formulário Base De Dados</title>
-        <meta name="description" content="Formulário para enviar dados para a API." />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
         <h2>FORMULÁRIO DE DADOS</h2>
         <form onSubmit={handleSubmit}>
-          <label>Carimbo de data/hora:</label>
-          <input type="text" name="Carimbo_de_data_hora" value={formData.carimbo} onChange={handleChange} placeholder='Digite o carimbo de data/hora'/> <br /><br />
 
           <label>Nome completo*:</label>
-          <input type="text" name="nome_completo" value={formData.nome_completo} onChange={handleChange} placeholder='Digite o nome completo'/> <br /><br />
+          <input type="text" name="nome_completo" value={formData.nome_completo} onChange={handleChange} /> <br /><br />
 
-          <label>Data de nascimento:</label>
+          <label>Data de nascimento*:</label>
           <input type="date" name="data_de_nascimento" value={formData.data_de_nascimento} onChange={handleChange} /> <br /><br />
 
-          <label>Gênero:</label>
-          <input type="text" name="genero" value={formData.genero} onChange={handleChange} placeholder='Digite o gênero'/> <br /><br />
+          
+          <label>Gênero*:</label>
+          <select name="genero" value={formData.genero} onChange={handleChange}>
+            <option value="">Selecione o gênero</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Feminino">Feminino</option>
+          </select> <br /><br />
+
 
           <label>Ocupação:</label>
-          <input type="text" name="ocupacao" value={formData.ocupacao} onChange={handleChange} placeholder='Digite a ocupação'/> <br /><br />
+          <input type="text" name="ocupacao" value={formData.ocupacao} onChange={handleChange} /> <br /><br />
 
-          <label>Telefone*:</label>
-          <input type="text" name="telefone" value={formData.telefone} onChange={handleChange} placeholder='Digite o telefone'/> <br /><br />
+          <label>Telefone*:</label><input 
+           type="text" 
+           name="telefone" 
+          value={formData.telefone} 
+          onChange={handleChange} 
+          placeholder="XX XXXXXXXX" 
+        style={{ opacity: 0.7 }} />
+
+<br /><br />
 
           <label>Instagram:</label>
-          <input type="text" name="instagram" value={formData.instagram} onChange={handleChange} placeholder='Digite o Instagram'/> <br /><br />
+          <input type="text" name="instagram" value={formData.instagram} onChange={handleChange} /> <br /><br />
 
-          <label>Email:</label>
-          <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder='Digite o email'/> <br /><br />
+          <label>Email*:</label>
+          <input type="email" name="email" value={formData.email} onChange={handleChange} /> <br /><br />
 
+         
           <label>Região onde mora*:</label>
           <select name="regiao_onde_mora" value={formData.regiao_onde_mora} onChange={handleChange}>
             <option value="">Selecione uma região</option>
@@ -149,17 +136,16 @@ export default function Home() {
             <option value="Vicente Pires (RA XXX)">Vicente Pires (RA XXX)</option>
           </select> <br /><br />
 
-
           <label>Órgão:</label>
-          <input type="text" name="orgao" value={formData.orgao} onChange={handleChange} placeholder='Digite o órgão'/> <br /><br />
+          <input type="text" name="orgao" value={formData.orgao} onChange={handleChange} /> <br /><br />
 
           <label>Comunidade:</label>
-          <input type="text" name="comunidade" value={formData.comunidade} onChange={handleChange} placeholder='Digite a comunidade'/> <br /><br />
+          <input type="text" name="comunidade" value={formData.comunidade} onChange={handleChange} /> <br /><br />
 
           <label>Origem:</label>
-          <input type="text" name="origem" value={formData.origem} onChange={handleChange} placeholder='Digite a origem'/> <br /><br />
+          <input type="text" name="origem" value={formData.origem} onChange={handleChange} /> <br /><br />
 
-          <button type="submit">Salvar</button>
+          <button type="submit">Enviar formulário</button>
         </form>
       </main>
     </>
