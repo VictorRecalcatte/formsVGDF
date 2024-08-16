@@ -59,8 +59,10 @@ export default function Home() {
       </Head>
       <main>
         <h2>FORMULÁRIO DE DADOS</h2>
+        <h3>Os campos marcados com um asterisco (*) são obrigatórios.</h3>
         <form onSubmit={handleSubmit}>
 
+<br></br>
           <label>Nome completo*:</label>
           <input type="text" name="nome_completo" value={formData.nome_completo} onChange={handleChange} /> <br /><br />
 

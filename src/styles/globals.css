@@ -50,3 +50,12 @@ label {
   
 }
 
+h3 {
+
+  color: #000000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: small;
+
+}
