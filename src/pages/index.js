@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -16,16 +16,80 @@ export default function Home() {
     origem: ''
   });
 
-  // Função para lidar com a mudança dos inputs
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prevData => ({
-      ...prevData,
-      [name]: value
-    }));
+  const ocupacaoList = [
+    { value: 'ADMINISTRADOR', label: 'ADMINISTRADOR' },
+    { value: 'ADMINISTRADOR(A)', label: 'ADMINISTRADOR(A)' },
+    { value: 'ADVOGADO(A)', label: 'ADVOGADO(A)' },
+    { value: 'ASSISTENTE SOCIAL', label: 'ASSISTENTE SOCIAL' },
+    { value: 'AUTONOMO', label: 'AUTONOMO' },
+    { value: 'DONA DE CASA', label: 'DONA DE CASA' },
+    { value: 'EMPRESÁRIO(A)', label: 'EMPRESÁRIO(A)' },
+    { value: 'ENFERMEIRO(A)', label: 'ENFERMEIRO(A)' },
+    { value: 'ENGENHEIRO(A)', label: 'ENGENHEIRO(A)' },
+    { value: 'ESTUDANTE', label: 'ESTUDANTE' },
+    { value: 'LÍDER COMUNITÁRIO(A)', label: 'LÍDER COMUNITÁRIO(A)' },
+    { value: 'LÍDER ESPORTIVO', label: 'LÍDER ESPORTIVO' },
+    { value: 'MÉDICO(A)', label: 'MÉDICO(A)' },
+    { value: 'OUTRO', label: 'OUTRO' },
+    { value: 'PADRE', label: 'PADRE' },
+    { value: 'PASTOR(A)', label: 'PASTOR(A)' },
+    { value: 'PROFESSOR(A)', label: 'PROFESSOR(A)' },
+    { value: 'SERVIDOR(A) PÚBLICO(A)', label: 'SERVIDOR(A) PÚBLICO(A)' },
+    { value: 'VENDEDOR(A)', label: 'VENDEDOR(A)' }
+  ];
+
+  const [filteredOcupacoes, setFilteredOcupacoes] = useState([]);
+  const [outraOcupacao, setOutraOcupacao] = useState('');
+
+  const formatPhoneNumber = (value) => {
+    const cleaned = value.replace(/\D/g, ''); // Remove caracteres não numéricos
+    if (cleaned.length <= 10) {
+      return cleaned.replace(/(\d{2})(\d{0,5})(\d{0,4})/, '($1) $2-$3');
+    }
+    return cleaned.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
   };
 
-  // Função para lidar com o envio do formulário
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    const formattedValue = name === 'telefone' ? formatPhoneNumber(value) : value;
+
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: formattedValue
+    }));
+
+    if (name === 'ocupacao') {
+      const filtered = ocupacaoList.filter(ocupacao =>
+        ocupacao.label.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredOcupacoes(filtered);
+    }
+  };
+
+  const selectOcupacao = (value) => {
+    setFormData(prevData => ({
+      ...prevData,
+      ocupacao: value,
+    }));
+    setFilteredOcupacoes([]);
+  };
+
+  const resetForm = () => {
+    setFormData({
+      nome_completo: '',
+      data_de_nascimento: '',
+      genero: '',
+      ocupacao: '',
+      telefone: '',
+      instagram: '',
+      email: '',
+      regiao_onde_mora: '',
+      orgao: '',
+      comunidade: '',
+      origem: ''
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -39,8 +103,8 @@ export default function Home() {
       });
 
       if (response.ok) {
-        const result = await response.json();
         alert('Dados enviados com sucesso!');
+        resetForm(); // Limpa o formulário após o envio bem-sucedido
       } else {
         const errorData = await response.json();
         console.error('Erro:', errorData);
@@ -62,14 +126,12 @@ export default function Home() {
         <h3>Os campos marcados com um asterisco (*) são obrigatórios.</h3>
         <form onSubmit={handleSubmit}>
 
-<br></br>
           <label>Nome completo*:</label>
           <input type="text" name="nome_completo" value={formData.nome_completo} onChange={handleChange} /> <br /><br />
 
           <label>Data de nascimento*:</label>
           <input type="date" name="data_de_nascimento" value={formData.data_de_nascimento} onChange={handleChange} /> <br /><br />
 
-          
           <label>Gênero*:</label>
           <select name="genero" value={formData.genero} onChange={handleChange}>
             <option value="">Selecione o gênero</option>
@@ -77,19 +139,31 @@ export default function Home() {
             <option value="Feminino">Feminino</option>
           </select> <br /><br />
 
-
-          <label>Ocupação:</label>
+          <label>Ocupação*:</label>
           <input type="text" name="ocupacao" value={formData.ocupacao} onChange={handleChange} /> <br /><br />
+          {filteredOcupacoes.length > 0 && (
+            <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
+              {filteredOcupacoes.map((ocupacao) => (
+                <li
+                  key={ocupacao.value}
+                  onClick={() => selectOcupacao(ocupacao.label)}
+                  style={{ cursor: 'pointer', borderBottom: '1px solid #ccc', marginBottom: '5px' }}
+                >
+                  {ocupacao.label}
+                </li>
+              ))}
+            </ul>
+          )}
 
-          <label>Telefone*:</label><input 
-           type="text" 
-           name="telefone" 
-          value={formData.telefone} 
-          onChange={handleChange} 
-          placeholder="XX XXXXXXXX" 
-        style={{ opacity: 0.7 }} />
-
-<br /><br />
+          <label>Telefone*:</label>
+          <input 
+            type="text" 
+            name="telefone" 
+            value={formData.telefone} 
+            onChange={handleChange} 
+            placeholder="(61) 9XXXX-XXXX" 
+            style={{ opacity: 0.7 }} 
+          /><br /><br />
 
           <label>Instagram:</label>
           <input type="text" name="instagram" value={formData.instagram} onChange={handleChange} /> <br /><br />
@@ -97,7 +171,6 @@ export default function Home() {
           <label>Email*:</label>
           <input type="email" name="email" value={formData.email} onChange={handleChange} /> <br /><br />
 
-         
           <label>Região onde mora*:</label>
           <select name="regiao_onde_mora" value={formData.regiao_onde_mora} onChange={handleChange}>
             <option value="">Selecione uma região</option>
@@ -131,7 +204,7 @@ export default function Home() {
             <option value="SIA (RA XXIX)">SIA (RA XXIX)</option>
             <option value="Sobradinho (RA V)">Sobradinho (RA V)</option>
             <option value="Sobradinho II (RA XXVI)">Sobradinho II (RA XXVI)</option>
-            <option value="Sol Nascente e Pôr do Sol ( RA XXXII)">Sol Nascente e Pôr do Sol ( RA XXXII)</option>
+            <option value="Sol Nascente e Pôr do Sol (RA XXXII)">Sol Nascente e Pôr do Sol (RA XXXII)</option>
             <option value="Sudoeste/Octogonal (RA XXII)">Sudoeste/Octogonal (RA XXII)</option>
             <option value="Taguatinga (RA III)">Taguatinga (RA III)</option>
             <option value="Varjão (RA XXIII)">Varjão (RA XXIII)</option>
