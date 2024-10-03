@@ -1,4 +1,4 @@
-import Head from 'next/head'; 
+import Head from 'next/head';
 import { useState } from 'react';
 import InputMask from 'react-input-mask'; // Importar a biblioteca de máscara
 
@@ -36,7 +36,9 @@ export default function Home() {
     { value: 'PASTOR(A)', label: 'PASTOR(A)' },
     { value: 'PROFESSOR(A)', label: 'PROFESSOR(A)' },
     { value: 'SERVIDOR(A) PÚBLICO(A)', label: 'SERVIDOR(A) PÚBLICO(A)' },
-    { value: 'VENDEDOR(A)', label: 'VENDEDOR(A)' }
+    { value: 'VENDEDOR(A)', label: 'VENDEDOR(A)' },
+    { value: 'DESEMPREGADO(A)', label: 'DESEMPREGADO(A)' }
+
   ];
 
   const regiaoList = [
@@ -121,33 +123,54 @@ export default function Home() {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Impede o comportamento padrão de recarregar a página
-  
+
+    const formDataToSend = {
+      ...formData,
+      email: formData.email === '' ? null : formData.email,  // Garantir que email vazio seja enviado como null
+    };
+
     // Exibir um indicador de carregamento
     const botaoEnviar = e.target.querySelector('button[type="submit"]');
     botaoEnviar.disabled = true;  // Desabilita o botão para evitar múltiplos envios
     botaoEnviar.innerText = 'Enviando...';
-  
+
     try {
       const response = await fetch('/api/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData), // Supondo que formData seja um objeto
+        body: JSON.stringify(formDataToSend), // Usar formData modificado
       });
-  
+
       if (!response.ok) {
         throw new Error(`Erro: ${response.statusText}`);
       }
-  
+
       const result = await response.json();
       console.log('Sucesso:', result);
-  
+
       // Exibir mensagem de sucesso
       alert('Formulário enviado com sucesso!');
+
+      // Resetar o formulário após envio bem-sucedido
+      setFormData({
+        nome_completo: '',
+        data_de_nascimento: '',
+        genero: '',
+        ocupacao: '',
+        telefone: '',
+        instagram: '',
+        email: '',
+        regiao_onde_mora: '',
+        orgao: '',
+        comunidade: '',
+        origem: ''
+      });
+
     } catch (error) {
       console.error('Erro ao enviar o formulário:', error);
-  
+
       // Exibir mensagem de erro
       alert('Erro ao enviar o formulário. Tente novamente.');
     } finally {
@@ -156,7 +179,7 @@ export default function Home() {
       botaoEnviar.innerText = 'Enviar';
     }
   };
-  
+
 
   return (
     <>
@@ -212,7 +235,7 @@ export default function Home() {
             </ul>
           )}
 
-          <label>Telefone*:</label>
+          <label>Celular*:</label>
           <InputMask
             mask="(99) 99999-9999"
             value={formData.telefone}
@@ -225,10 +248,10 @@ export default function Home() {
           <label>Instagram:</label>
           <input type="text" name="instagram" value={formData.instagram} onChange={handleChange} /> <br /><br />
 
-          <label>Email*:</label>
+          <label>Email:</label>
           <input type="email" name="email" value={formData.email} onChange={handleChange} /> <br /><br />
 
-          <label>Órgão*:</label>
+          <label>Órgão:</label>
           <input type="text" name="orgao" value={formData.orgao} onChange={handleChange} /> <br /><br />
 
           <label>Comunidade:</label>

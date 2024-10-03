@@ -11,6 +11,9 @@ const validationSchema = Yup.object().shape({
   telefone: Yup.string()
     .required('O telefone é obrigatório.')
     .matches(/^\(\d{2}\) \d{5}-\d{4}$/, 'O telefone deve estar no formato (XX) XXXXX-XXXX'),
+  email: Yup.string()
+    .email('Digite um e-mail válido.')
+    .nullable() // Permite que o campo seja opcional
 });
 
 const MyForm = () => {
@@ -19,6 +22,7 @@ const MyForm = () => {
       initialValues={{
         nome_completo: '',
         telefone: '',
+        email: '',
       }}
       validationSchema={validationSchema}
       onSubmit={(values, { setSubmitting }) => {
@@ -48,6 +52,12 @@ const MyForm = () => {
               )}
             </Field>
             <ErrorMessage name="telefone" component="div" style={{ color: 'red' }} />
+          </div>
+
+          <div>
+            <label>Email:</label>
+            <Field type="email" name="email" />
+            <ErrorMessage name="email" component="div" style={{ color: 'red' }} />
           </div>
 
           <button type="submit">Enviar</button>
