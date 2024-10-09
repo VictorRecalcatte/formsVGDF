@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { useState } from 'react';
-import InputMask from 'react-input-mask'; // Importar a biblioteca de máscara
+import InputMask from 'react-input-mask';
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -14,7 +14,8 @@ export default function Home() {
     regiao_onde_mora: '',
     orgao: '',
     comunidade: '',
-    origem: ''
+    origem: '',
+    senha: ''
   });
 
   const ocupacaoList = [
@@ -38,44 +39,20 @@ export default function Home() {
     { value: 'SERVIDOR(A) PÚBLICO(A)', label: 'SERVIDOR(A) PÚBLICO(A)' },
     { value: 'VENDEDOR(A)', label: 'VENDEDOR(A)' },
     { value: 'DESEMPREGADO(A)', label: 'DESEMPREGADO(A)' }
-
   ];
 
   const regiaoList = [
-    "Água Quente (RA XXXV)",
-    "Arapoanga (RA XXXIV)",
-    "Águas Claras (RA XX)",
-    "Arniqueira (RA XXXIII)",
-    "Brazlândia (RA IV)",
-    "Candangolândia (RA XIX)",
-    "Ceilândia (RA IX)",
-    "Cruzeiro (RA XI)",
-    "Fercal (RA XXXI)",
-    "Gama (RA II)",
-    "Guará (RA X)",
-    "Itapoã (RA XXVIII)",
-    "Jardim Botânico (RA XXVII)",
-    "Lago Norte (RA XVIII)",
-    "Lago Sul (RA XVI)",
-    "Núcleo Bandeirante (RA VIII)",
-    "Paranoá (RA VII)",
-    "Park Way (RA XXIV)",
-    "Planaltina (RA VI)",
-    "Plano Piloto (RA I)",
-    "Recanto das Emas (RA XV)",
-    "Riacho Fundo (RA XVII)",
-    "Riacho Fundo II (RA XXI)",
-    "Samambaia (RA XII)",
-    "Santa Maria (RA XIII)",
-    "São Sebastião (RA XIV)",
-    "SCIA/Estrutural (RA XXV)",
-    "SIA (RA XXIX)",
-    "Sobradinho (RA V)",
-    "Sobradinho II (RA XXVI)",
-    "Sol Nascente e Pôr do Sol (RA XXXII)",
-    "Sudoeste/Octogonal (RA XXII)",
-    "Taguatinga (RA III)",
-    "Varjão (RA XXIII)",
+    "Água Quente (RA XXXV)", "Arapoanga (RA XXXIV)", "Águas Claras (RA XX)",
+    "Arniqueira (RA XXXIII)", "Brazlândia (RA IV)", "Candangolândia (RA XIX)",
+    "Ceilândia (RA IX)", "Cruzeiro (RA XI)", "Fercal (RA XXXI)", "Gama (RA II)",
+    "Guará (RA X)", "Itapoã (RA XXVIII)", "Jardim Botânico (RA XXVII)",
+    "Lago Norte (RA XVIII)", "Lago Sul (RA XVI)", "Núcleo Bandeirante (RA VIII)",
+    "Paranoá (RA VII)", "Park Way (RA XXIV)", "Planaltina (RA VI)", "Plano Piloto (RA I)",
+    "Recanto das Emas (RA XV)", "Riacho Fundo (RA XVII)", "Riacho Fundo II (RA XXI)",
+    "Samambaia (RA XII)", "Santa Maria (RA XIII)", "São Sebastião (RA XIV)",
+    "SCIA/Estrutural (RA XXV)", "SIA (RA XXIX)", "Sobradinho (RA V)",
+    "Sobradinho II (RA XXVI)", "Sol Nascente e Pôr do Sol (RA XXXII)",
+    "Sudoeste/Octogonal (RA XXII)", "Taguatinga (RA III)", "Varjão (RA XXIII)",
     "Vicente Pires (RA XXX)"
   ];
 
@@ -122,64 +99,49 @@ export default function Home() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Impede o comportamento padrão de recarregar a página
+    e.preventDefault();
 
-    const formDataToSend = {
-      ...formData,
-      email: formData.email === '' ? null : formData.email,  // Garantir que email vazio seja enviado como null
-    };
-
-    // Exibir um indicador de carregamento
-    const botaoEnviar = e.target.querySelector('button[type="submit"]');
-    botaoEnviar.disabled = true;  // Desabilita o botão para evitar múltiplos envios
-    botaoEnviar.innerText = 'Enviando...';
-
-    try {
-      const response = await fetch('/api/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formDataToSend), // Usar formData modificado
-      });
-
-      if (!response.ok) {
-        throw new Error(`Erro: ${response.statusText}`);
-      }
-
-      const result = await response.json();
-      console.log('Sucesso:', result);
-
-      // Exibir mensagem de sucesso
-      alert('Formulário enviado com sucesso!');
-
-      // Resetar o formulário após envio bem-sucedido
-      setFormData({
-        nome_completo: '',
-        data_de_nascimento: '',
-        genero: '',
-        ocupacao: '',
-        telefone: '',
-        instagram: '',
-        email: '',
-        regiao_onde_mora: '',
-        orgao: '',
-        comunidade: '',
-        origem: ''
-      });
-
-    } catch (error) {
-      console.error('Erro ao enviar o formulário:', error);
-
-      // Exibir mensagem de erro
-      alert('Erro ao enviar o formulário. Tente novamente.');
-    } finally {
-      // Resetar o estado do botão após o término da requisição
-      botaoEnviar.disabled = false;
-      botaoEnviar.innerText = 'Enviar';
+    if (formData.senha !== 'vgdfcadastro') {
+      alert('Senha incorreta! Por favor, digite a senha correta.');
+      return;
     }
-  };
 
+     // Remover o campo "senha" antes de enviar os dados para o backend
+  const { senha, ...formDataToSend } = formData;
+
+  const botaoEnviar = e.target.querySelector('button[type="submit"]');
+  botaoEnviar.disabled = true;
+  botaoEnviar.innerText = 'Enviando...';
+
+  try {
+    const response = await fetch('/api/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formDataToSend), // Enviar formData sem o campo "senha"
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erro: ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    console.log('Sucesso:', result);
+    alert('Formulário enviado com sucesso!');
+
+    // Resetar o formulário
+    setFormData({
+      nome_completo: '', data_de_nascimento: '', genero: '', ocupacao: '',
+      telefone: '', instagram: '', email: '', regiao_onde_mora: '',
+      orgao: '', comunidade: '', origem: '', senha: ''
+    });
+  } catch (error) {
+    console.error('Erro ao enviar o formulário:', error);
+    alert('Erro ao enviar o formulário. Tente novamente.');
+  } finally {
+    botaoEnviar.disabled = false;
+    botaoEnviar.innerText = 'Enviar';
+  }
+};
 
   return (
     <>
@@ -260,8 +222,18 @@ export default function Home() {
           <label>Origem:</label>
           <input type="text" name="origem" value={formData.origem} onChange={handleChange} /> <br /><br />
 
+          <label>Senha:</label>
+          <input 
+            type="password" 
+            name="senha" 
+            value={formData.senha} 
+            onChange={handleChange} 
+            placeholder="Digite a senha para enviar o formulário" 
+          /> 
+          <br /><br />
+
           <button type="submit" style={{ cursor: 'pointer' }}>Enviar</button>
-          </form>
+        </form>
       </main>
     </>
   );
