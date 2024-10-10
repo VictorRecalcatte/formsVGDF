@@ -153,86 +153,117 @@ export default function Home() {
         <h2>FORMULÁRIO DE DADOS</h2>
         <h3>Os campos marcados com um asterisco (*) são obrigatórios.</h3>
         <form onSubmit={handleSubmit}>
-          <label>Nome completo *:</label>
-          <input type="text" name="nome_completo" value={formData.nome_completo} onChange={handleChange} /> <br /><br />
 
-          <label>Data de nascimento *:</label>
-          <input type="date" name="data_de_nascimento" /> <br /><br />
+          <div class="form-group">
+              <input type="text" name="nome_completo" value={formData.nome_completo} onChange={handleChange} /> 
+              <label>Nome completo*:</label>
+          </div>
 
-          <label>Gênero*:</label>
-          <select name="genero" value={formData.genero} onChange={handleChange}>
-            <option value="">Selecione o gênero</option>
-            <option value="Homem">Homem</option>
-            <option value="Mulher">Mulher</option>
-          </select> <br /><br />
+          <div class="form-group">
+            <InputMask
+              mask="99/99/9999"
+              value={formData.data_de_nascimento}
+              onChange={handleChange}
+              name="data_de_nascimento"
+              placeholder="XX/XX/XXXX"
+            />
+              <label>Data de nascimento *:</label>
+          </div>
 
-          <label>Ocupação*:</label>
-          <input type="text" name="ocupacao" value={formData.ocupacao} onChange={handleChange} /> <br /><br />
-          {filteredOcupacoes.length > 0 && (
-            <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
-              {filteredOcupacoes.map((ocupacao) => (
-                <li
-                  key={ocupacao.value}
-                  onClick={() => selectOcupacao(ocupacao.label)}
-                  style={{ cursor: 'pointer', borderBottom: '1px solid #ccc', marginBottom: '5px' }}
-                >
-                  {ocupacao.label}
-                </li>
-              ))}
-            </ul>
-          )}
+          <div class = "form-group">
+            <select name="genero" value={formData.genero} onChange={handleChange}>
+              <option value="">Selecione o gênero</option>
+              <option value="Masculino">Masculino</option>
+              <option value="Feminino">Feminino</option>
+            </select>
+            <label>Gênero*:</label>
+          </div>
 
-          <label>Região onde mora*:</label>
-          <input type="text" name="regiao_onde_mora" value={formData.regiao_onde_mora} onChange={handleChange} /> <br /><br />
-          {filteredRegioes.length > 0 && (
-            <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
-              {filteredRegioes.map((regiao) => (
-                <li
-                  key={regiao}
-                  onClick={() => selectRegiao(regiao)}
-                  style={{ cursor: 'pointer', borderBottom: '1px solid #ccc', marginBottom: '5px' }}
-                >
-                  {regiao}
-                </li>
-              ))}
-            </ul>
-          )}
 
-          <label>Celular*:</label>
-          <InputMask
-            mask="(99) 99999-9999"
-            value={formData.telefone}
-            onChange={handleChange}
-            name="telefone"
-            placeholder="(XX) XXXXX-XXXX"
-          />
-          <br /><br />
+          <div class='form-group'>
+            <input type="text" name="ocupacao" value={formData.ocupacao} onChange={handleChange} /> <br />
+            {filteredOcupacoes.length > 0 && (
+              <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
+                {filteredOcupacoes.map((ocupacao) => (
+                  <li
+                    key={ocupacao.value}
+                    onClick={() => selectOcupacao(ocupacao.label)}
+                    style={{ cursor: 'pointer', borderBottom: '1px solid #ccc', marginBottom: '5px' }}
+                  >
+                    {ocupacao.label}
+                  </li>
+                ))}
+              </ul>
+            )}
+            <label>Ocupação*:</label>
+          </div>
 
-          <label>Instagram:</label>
-          <input type="text" name="instagram" value={formData.instagram} onChange={handleChange} /> <br /><br />
+          <div class = 'form-group'>
+                <input type="text" name="regiao_onde_mora" value={formData.regiao_onde_mora} onChange={handleChange} /> <br />
+              {filteredRegioes.length > 0 && (
+                <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
+                  {filteredRegioes.map((regiao) => (
+                    <li
+                      key={regiao}
+                      onClick={() => selectRegiao(regiao)}
+                      style={{ cursor: 'pointer', borderBottom: '1px solid #ccc', marginBottom: '5px' }}
+                    >
+                      {regiao}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <label>Região onde mora*:</label>
+            </div>
 
-          <label>Email:</label>
-          <input type="email" name="email" value={formData.email} onChange={handleChange} /> <br /><br />
+            <div class = 'form-group'>
+              <InputMask
+              mask="(99) 99999-9999"
+              value={formData.telefone}
+              onChange={handleChange}
+              name="telefone"
+              placeholder="(XX) XXXXX-XXXX"
+              />
+              <label>Celular*:</label>
+            </div>
 
-          <label>Órgão:</label>
-          <input type="text" name="orgao" value={formData.orgao} onChange={handleChange} /> <br /><br />
+            <div class="form-group">
+            <input type="text" name="instagram" value={formData.instagram} onChange={handleChange} /> 
+            <label>Instagram:</label>
+          </div>
 
-          <label>Comunidade:</label>
-          <input type="text" name="comunidade" value={formData.comunidade} onChange={handleChange} /> <br /><br />
+          <div class='form-group'>
+            <input type="email" name="email" value={formData.email} onChange={handleChange} />
+            <label>Email*:</label>
+          </div>
 
-          <label>Origem:</label>
-          <input type="text" name="origem" value={formData.origem} onChange={handleChange} /> <br /><br />
+          <div class="form-group">
+            
+            <input type="text" name="orgao" value={formData.orgao} onChange={handleChange} />
+            <label>Órgão:</label>
+          </div>
 
-          <label>Senha:</label>
-          <input 
-            type="password" 
-            name="senha" 
-            value={formData.senha} 
-            onChange={handleChange} 
-            placeholder="Digite a senha para enviar o formulário" 
-          /> 
-          <br /><br />
+          <div class = "form-group">
+            <input type="text" name="comunidade" value={formData.comunidade} onChange={handleChange} />
+            <label>Comunidade:</label>
+          </div>
 
+          <div class = "form-group">
+            <input type="text" name="origem" value={formData.origem} onChange={handleChange} />
+            <label>Origem:</label>
+          </div>
+
+          <div class = "form-group">
+            <input 
+              type="password" 
+              name="senha" 
+              value={formData.senha} 
+              onChange={handleChange} 
+              placeholder="Digite a senha para enviar o formulário" 
+            /> 
+            <label>Senha:</label>
+          </div>
+          
           <button type="submit" style={{ cursor: 'pointer' }}>Enviar</button>
         </form>
       </main>
