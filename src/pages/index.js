@@ -2,6 +2,7 @@ import Head from 'next/head';
 import { useState } from 'react';
 import InputMask from 'react-input-mask';
 
+
 export default function Home() {
   const [formData, setFormData] = useState({
     nome_completo: '',
@@ -156,7 +157,7 @@ export default function Home() {
           <input type="text" name="nome_completo" value={formData.nome_completo} onChange={handleChange} /> <br /><br />
 
           <label>Data de nascimento *:</label>
-          <input type="date" name="data_de_nascimento" value={formData.data_de_nascimento} onChange={handleChange} /> <br /><br />
+          <input type="date" name="data_de_nascimento" /> <br /><br />
 
           <label>Gênero*:</label>
           <select name="genero" value={formData.genero} onChange={handleChange}>
